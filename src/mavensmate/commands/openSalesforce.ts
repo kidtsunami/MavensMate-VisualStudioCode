@@ -1,9 +1,9 @@
 import { ClientCommand } from './clientCommand';
 import { BaseCommand } from './baseCommand';
 
-module.exports = class EditProject extends ClientCommand {
+module.exports = class OpenSalesforce extends ClientCommand {
     static create(): BaseCommand {
-        return new EditProject();
+        return new OpenSalesforce();
     }
 
     constructor() {
