@@ -11,7 +11,7 @@ import * as CommandRegistrar from '../src/vscode/commandRegistrar';
 import { getConfiguration } from './vscode/mavensMateConfiguration';
 
 
-export class MavensMateExtension {
+class MavensMateExtension {
     context: vscode.ExtensionContext;
     mavensMateChannel: MavensMateChannel;
     mavensMateStatus: MavensMateStatus;
@@ -90,3 +90,5 @@ export class MavensMateExtension {
         console.info(`MavensMate: Finished Deactivating`);
     }
 }
+
+export default MavensMateExtension;

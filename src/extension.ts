@@ -1,16 +1,17 @@
 import * as vscode from 'vscode';
+import MavensMateExtension from './mavensMateExtension';
 
-let mavensMateMateExtension;
+let mavensMateExtension: MavensMateExtension;
 
-export function activate(context: vscode.ExtensionContext) {
-    let { MavensMateExtension } = require('./mavensMateExtension');
-    mavensMateMateExtension = MavensMateExtension.create(context);
-    return mavensMateMateExtension.activate();
+export function activate(context: vscode.ExtensionContext): any {
+    mavensMateExtension = MavensMateExtension.create(context);
+    console.info('activating!!!!');
+    return mavensMateExtension.activate(context);
 }
 
 export function deactivate() {
-    mavensMateMateExtension.deactivate();
-    mavensMateMateExtension = null;
+    mavensMateExtension.deactivate();
+    mavensMateExtension = null;
 }
 
 process.on("unhandledRejection", function(reason, promise) {
