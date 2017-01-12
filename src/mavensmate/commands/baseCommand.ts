@@ -4,14 +4,7 @@ import Promise = require('bluebird');
 import * as vscode from 'vscode';
 import { ProjectSettings } from '../projectSettings';
 
-interface BaseCommandInterface {
-    currentTextDocument?: boolean,
-    confirm?: {
-        message: string
-    }
-}
-
-export abstract class BaseCommand implements BaseCommandInterface {
+export abstract class BaseCommand {
     label: string;
     mavensMateChannel: MavensMateChannel;
     allowWithoutProject: boolean;
