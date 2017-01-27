@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 
 import { BaseCommand } from '../../../src/mavensmate/commands/baseCommand';
 import MockCommand from './mockCommand';
-import { ProjectSettings } from '../../../src/mavensmate/ProjectSettings';
+import { ProjectSettings } from '../../../src/mavensmate/projectSettings';
 
 suite('Base Command', () => {
     let baseCommand: BaseCommand;
