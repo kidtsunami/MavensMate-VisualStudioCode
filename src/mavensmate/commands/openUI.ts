@@ -1,6 +1,5 @@
 import { ClientCommand } from './clientCommand';
 import { BaseCommand } from './baseCommand';
-import * as vscode from 'vscode';
 
 class OpenUI extends ClientCommand {
     static create(): BaseCommand {

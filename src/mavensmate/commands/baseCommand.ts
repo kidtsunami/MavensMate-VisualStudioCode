@@ -1,6 +1,5 @@
 import { MavensMateChannel } from '../../vscode/mavensMateChannel';
 
-import Promise = require('bluebird');
 import * as vscode from 'vscode';
 import { ProjectSettings } from '../projectSettings';
 

@@ -1,6 +1,5 @@
 import { ClientCommand } from './clientCommand';
 import { BaseCommand } from './baseCommand';
-import * as vscode from 'vscode';
 
 class OpenSettings extends ClientCommand {
     static create(): BaseCommand {
