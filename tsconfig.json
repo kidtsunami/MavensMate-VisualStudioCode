@@ -3,13 +3,11 @@
         "module": "commonjs",
         "target": "es5",
         "outDir": "out",
-        "noLib": true,
+        "lib": [ "es5", "dom" ],
         "sourceMap": true,
         "rootDir": "."
     },
-    "exclude": [
-        "node_modules",
-        "typings/browser",
-        "typings/browser.td.s"
+    "include": [
+        "node_modules/@types"
     ]
 }

@@ -1,8 +1,18 @@
 sudo: false
+language: node_js
+node_js:
+  - "node"
 
 os:
   - osx
   - linux
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.9
 
 before_install:
   - if [ $TRAVIS_OS_NAME == "linux" ]; then
