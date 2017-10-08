@@ -14,7 +14,7 @@ module.exports = class HideCoverage extends PathsCommand {
     }
 
     constructor() {
-        super('Hide Apex Code Coverage', 'hide-coverage')
+        super('Hide Apex Code Coverage', 'get-coverage')
         this.mavensMateCodeCoverage = MavensMateCodeCoverage.getInstance();
     }
 
@@ -33,11 +33,15 @@ module.exports = class HideCoverage extends PathsCommand {
 
     private handleCoverageResponse(response) {
         if (response.result && response.result != []) {
-            let options: vscode.DecorationRenderOptions = {
-                isWholeLine: true,
-                backgroundColor: 'rgba(0, 0, 0, 0.0)'
-            };
-            var decoration: vscode.TextEditorDecorationType  = vscode.window.createTextEditorDecorationType(options);
+            for (let pathEnd in response.result) {
+                let workspaceRoot = vscode.workspace.rootPath;
+                let filePath = path.join(workspaceRoot, 'src', 'classes', pathEnd);
+
+                let coverageResult = response.result[pathEnd];
+                let uncoveredLines: number[] = coverageResult.uncoveredLines;
+
+                this.mavensMateCodeCoverage.clearReport(filePath, coverageResult.percentCovered);
+            }
         } else {
             let message = `No Apex Code Coverage Available: ${this.baseName} (${this.filePath})`;
             this.mavensMateChannel.appendLine(message);

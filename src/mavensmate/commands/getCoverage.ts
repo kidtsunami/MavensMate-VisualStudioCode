@@ -9,7 +9,7 @@ import Promise = require('bluebird');
 
 module.exports = class GetCoverage extends PathsCommand {
     mavensMateCodeCoverage: MavensMateCodeCoverage;
-    static create(){
+    static create() {
         return new GetCoverage();
     }
 
@@ -19,7 +19,7 @@ module.exports = class GetCoverage extends PathsCommand {
     }
 
     protected confirmPath(): Thenable<any> {
-        if(this.filePath.indexOf('apex-scripts') === -1){
+        if (this.filePath.indexOf('apex-scripts') === -1) {
             return super.confirmPath();
         } else {
             return Promise.reject(`Local Apex Scripts aren't covered by tests`);
@@ -31,9 +31,9 @@ module.exports = class GetCoverage extends PathsCommand {
             .then(() => this.handleCoverageResponse(response));
     }
 
-    private handleCoverageResponse(response){
-        if(response.result && response.result != []) {
-            for(let pathEnd in response.result){
+    private handleCoverageResponse(response) {
+        if (response.result && response.result != []) {
+            for (let pathEnd in response.result) {
                 let workspaceRoot = vscode.workspace.rootPath;
                 let filePath = path.join(workspaceRoot, 'src', 'classes', pathEnd);
 
