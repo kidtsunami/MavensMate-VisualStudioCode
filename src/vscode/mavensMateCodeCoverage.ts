@@ -2,27 +2,27 @@ import * as vscode from 'vscode';
 
 export class MavensMateCodeCoverage implements vscode.Disposable {
     decorationType: vscode.TextEditorDecorationType;
-    uncoveredRangesByPath: { [fsPath: string]: vscode.Range[]}
-    percentCoveredByPath: { [fsPath: string]: number}
+    uncoveredRangesByPath: { [fsPath: string]: vscode.Range[] }
+    percentCoveredByPath: { [fsPath: string]: number }
     coverageStatus: vscode.StatusBarItem;
 
     private static _instance: MavensMateCodeCoverage = null;
 
     static getInstance(): MavensMateCodeCoverage {
-        if(MavensMateCodeCoverage._instance == null){
+        if (MavensMateCodeCoverage._instance == null) {
             MavensMateCodeCoverage._instance = new MavensMateCodeCoverage();
         }
 
         return MavensMateCodeCoverage._instance;
     }
 
-    constructor(){
+    constructor() {
         this.decorationType = this.getDecorationType();
         this.uncoveredRangesByPath = {};
         this.percentCoveredByPath = {};
-        this.coverageStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left,1);
+        this.coverageStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 1);
         this.coverageStatus.command = 'mavensmate.getCoverage';
-        
+
         this.refreshActivePercentCovered();
         this.coverageStatus.show();
         vscode.window.onDidChangeActiveTextEditor((textEditor) => {
@@ -30,7 +30,7 @@ export class MavensMateCodeCoverage implements vscode.Disposable {
         });
     }
 
-    private getDecorationType(): vscode.TextEditorDecorationType{
+    private getDecorationType(): vscode.TextEditorDecorationType {
         let options: vscode.DecorationRenderOptions = {
             isWholeLine: true,
             backgroundColor: 'rgba(215, 44, 44, 0.3)'
@@ -38,8 +38,8 @@ export class MavensMateCodeCoverage implements vscode.Disposable {
         return vscode.window.createTextEditorDecorationType(options);
     }
 
-    private onDidChangeActiveTextEditor(textEditor: vscode.TextEditor){
-        if(textEditor.document.languageId === 'apex'){
+    private onDidChangeActiveTextEditor(textEditor: vscode.TextEditor) {
+        if (textEditor.document.languageId === 'apex') {
             this.refreshUncoveredDecorations();
             this.refreshActivePercentCovered();
             this.coverageStatus.show();
@@ -48,7 +48,7 @@ export class MavensMateCodeCoverage implements vscode.Disposable {
         }
     }
 
-    report(fsPath, percentCovered: number, uncoveredLines: number[]){
+    report(fsPath, percentCovered: number, uncoveredLines: number[]) {
         let uncoveredRanges: vscode.Range[] = uncoveredLines.map(asRange);
         this.uncoveredRangesByPath[fsPath] = uncoveredRanges;
         this.percentCoveredByPath[fsPath] = percentCovered;
@@ -56,19 +56,37 @@ export class MavensMateCodeCoverage implements vscode.Disposable {
         this.refreshUncoveredDecorations();
     }
 
-    private refreshUncoveredDecorations(){
-        for(let textEditor of vscode.window.visibleTextEditors){
+    clearReport(fsPath, percentCovered: number) {
+        this.percentCoveredByPath[fsPath] = percentCovered;
+        this.refreshActivePercentCovered();
+        this.clearDecorations();
+    }
+
+    private refreshUncoveredDecorations() {
+        for (let textEditor of vscode.window.visibleTextEditors) {
             let uncoveredRanges = this.uncoveredRangesByPath[textEditor.document.fileName];
-            if(uncoveredRanges !== undefined){
+            if (uncoveredRanges !== undefined) {
                 textEditor.setDecorations(this.decorationType, uncoveredRanges);
             }
         }
     }
 
-    private refreshActivePercentCovered(){
-        if(vscode.window.activeTextEditor && vscode.window.activeTextEditor.document){
+    private clearDecorations() {
+        var textEditor = vscode.window.activeTextEditor;
+        let options: vscode.DecorationRenderOptions = {
+            isWholeLine: true,
+            backgroundColor: 'rgba(255, 255, 255, 1.0)'
+        };
+        var decoration: vscode.TextEditorDecorationType = vscode.window.createTextEditorDecorationType(options);
+        var lineNumber = textEditor.document.lineCount;
+        var range = new vscode.Range(new vscode.Position(0, 0), new vscode.Position(lineNumber - 1, 0));
+        textEditor.setDecorations(decoration, [range]);
+    }
+
+    private refreshActivePercentCovered() {
+        if (vscode.window.activeTextEditor && vscode.window.activeTextEditor.document) {
             let activePath = vscode.window.activeTextEditor.document.uri.fsPath;
-            if(this.percentCoveredByPath[activePath] != undefined){
+            if (this.percentCoveredByPath[activePath] != undefined) {
                 let percentCovered = this.percentCoveredByPath[activePath];
                 this.coverageStatus.text = `${percentCovered}% Covered`;
             } else {
@@ -77,13 +95,13 @@ export class MavensMateCodeCoverage implements vscode.Disposable {
         }
     }
 
-    dispose(){
+    dispose() {
         this.coverageStatus.dispose();
     }
 }
 
-function asRange(lineNumber){
-    let vscodeLineNumber = lineNumber-1;
+function asRange(lineNumber) {
+    let vscodeLineNumber = lineNumber - 1;
     let start = new vscode.Position(vscodeLineNumber, 0);
     let end = new vscode.Position(vscodeLineNumber, 0);
     return new vscode.Range(start, end);

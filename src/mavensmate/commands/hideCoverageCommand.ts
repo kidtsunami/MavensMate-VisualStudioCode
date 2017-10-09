@@ -7,14 +7,14 @@ import * as vscode from 'vscode';
 import path = require('path');
 import Promise = require('bluebird');
 
-module.exports = class GetCoverage extends PathsCommand {
+module.exports = class HideCoverage extends PathsCommand {
     mavensMateCodeCoverage: MavensMateCodeCoverage;
     static create() {
-        return new GetCoverage();
+        return new HideCoverage();
     }
 
     constructor() {
-        super('Get Apex Code Coverage', 'get-coverage')
+        super('Hide Apex Code Coverage', 'get-coverage')
         this.mavensMateCodeCoverage = MavensMateCodeCoverage.getInstance();
     }
 
@@ -40,7 +40,7 @@ module.exports = class GetCoverage extends PathsCommand {
                 let coverageResult = response.result[pathEnd];
                 let uncoveredLines: number[] = coverageResult.uncoveredLines;
 
-                this.mavensMateCodeCoverage.report(filePath, coverageResult.percentCovered, uncoveredLines);
+                this.mavensMateCodeCoverage.clearReport(filePath, coverageResult.percentCovered);
             }
         } else {
             let message = `No Apex Code Coverage Available: ${this.baseName} (${this.filePath})`;
