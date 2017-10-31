@@ -28,9 +28,9 @@ export abstract class PathsCommand extends ClientCommand {
     protected confirmPath(): Thenable<any> {
         if(this.filePath && this.filePath.length > 0){
             this.baseName = path.basename(this.filePath);
-            return Promise.resolve();
+            return Promise.resolve(true);
         } else {
-            return Promise.reject(`A file path is required for ${this.label}`);
+            throw new Error(`A file path is required for ${this.label}`);
         }
     }
 

@@ -45,7 +45,9 @@ export abstract class BaseCommand implements BaseCommandInterface {
         if(response && response.error && response.error.endsWith('Project requires re-authentication.')){
             console.warn('MavensMate: Need to re-authenticate.');
             return vscode.commands.executeCommand('mavensmate.oAuthProject');
-        }     
+        } else {
+            console.error(`MavensMate: ${response}`)
+        }
     }
 
     private promptToOpenProject(){
