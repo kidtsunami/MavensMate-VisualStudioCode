@@ -50,7 +50,9 @@ export class MavensMateChannel implements Disposable {
             }
             this.channel.appendLine(formattedMessage);
             
-            this.show();
+            if(!this.isShowing) {
+                this.show();
+            }
 
             if(this.waitingOnCount == 0 && this.isWaiting == false){
                 this.isWaiting = true;
