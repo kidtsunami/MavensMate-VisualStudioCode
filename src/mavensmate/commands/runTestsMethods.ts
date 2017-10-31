@@ -24,7 +24,7 @@ class runTestsMethods extends ClientCommand {
         }
         return this.confirmPath()
             .then(() => this.getUserInput())
-            .then((input: string) => {
+            .then((input: any) => {
                 let methodNames = input.replace(' ','')
                     .split(',')
                     .filter(test => test != '');

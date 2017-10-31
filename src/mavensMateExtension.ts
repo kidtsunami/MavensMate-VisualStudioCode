@@ -67,13 +67,16 @@ export class MavensMateExtension {
         let saveEvent = vscode.workspace.onDidSaveTextDocument((textDocument) => {
             let compileOnSaveConfigured = getConfiguration('mavensMate.compileOnSave');
             let isApexScript = textDocument.fileName.includes('apex-scripts');
+            let isMetadata = textDocument.fileName.includes('src');
 
             if (!compileOnSaveConfigured) {
                 console.info('MavensMate: compileOnSave is not configured.');
             } else if (isApexScript) {
                 console.info('MavensMate: silently ignoring the saving of a local apex script. (OK you got me, this isn\'t necessarily silence)');
-            } else {
+            } else if (isMetadata) {
                 return vscode.commands.executeCommand('mavensmate.compileFile', textDocument.uri);
+            } else {
+                console.info('MavensMate: silently ignoring the saving of a non-metadata file (not under a src directory');
             }
         });
         this.context.subscriptions.push(saveEvent);

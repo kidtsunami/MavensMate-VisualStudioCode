@@ -5,7 +5,7 @@ import { handleCompileResponse } from '../handlers/compileResponseHandler';
 import * as vscode from 'vscode';
 import Promise = require('bluebird');
 
-let languagesToCompileOnSave = new Set<string>(['apex', 'visualforce', 'xml', 'javascript', 'css']);
+let languagesToCompileOnSave = new Set<string>(['apex', 'visualforce', 'html', 'xml', 'javascript', 'css']);
 
 class CompileFile extends PathsCommand {
     static create(label?: string): PathsCommand{
@@ -23,7 +23,9 @@ class CompileFile extends PathsCommand {
         let uriToOpen = vscode.Uri.file(this.filePath);
         let confirmPromise = vscode.workspace.openTextDocument(uriToOpen)
             .then((textDocument) => {
-                if(!languagesToCompileOnSave.has(textDocument.languageId)){
+                if(!this.checkIsMetadata()) {
+                    throw new Error(`File is not metadata: ${this.filePath}`);
+                } else if(!languagesToCompileOnSave.has(textDocument.languageId)){
                     throw new Error(`Can not compile this file: ${this.filePath}`);
                 } else if(this.filePath.includes('apex-scripts')){
                     throw new Error(`Local Apex Scripts can't be compiled. You can run them with Run Apex Script`);

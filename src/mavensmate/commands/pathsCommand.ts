@@ -34,6 +34,22 @@ export abstract class PathsCommand extends ClientCommand {
         }
     }
 
+    protected checkIsMetadata(): boolean {
+        let isMetadata: boolean = false;
+        
+        if(this.filePath) {
+            let filePathParts = this.filePath.split(path.sep);
+            let srcDirectoryIndex = filePathParts.length - 3;
+
+            let srcDirectoryPath = path.join(vscode.workspace.rootPath, 'src');
+            let underWorkspaceSrcDirectory = this.filePath.startsWith(srcDirectoryPath);
+            
+            isMetadata = filePathParts[srcDirectoryIndex] == 'src' && underWorkspaceSrcDirectory;
+        }
+
+        return isMetadata;
+    }
+
     onStart(): Promise<any>{
         return super.onStart()
             .then(() => {

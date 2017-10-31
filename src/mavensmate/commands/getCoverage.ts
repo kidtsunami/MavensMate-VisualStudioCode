@@ -19,10 +19,12 @@ module.exports = class GetCoverage extends PathsCommand {
     }
 
     protected confirmPath(): Thenable<any> {
-        if (this.filePath.indexOf('apex-scripts') === -1) {
-            return super.confirmPath();
+        if(!this.checkIsMetadata()) {
+            throw new Error(`File is not metadata: ${this.filePath}`);
+        } else if (this.filePath.indexOf('apex-scripts') !== -1) {
+            throw new Error(`Local Apex Scripts aren't covered by tests`);
         } else {
-            return Promise.reject(`Local Apex Scripts aren't covered by tests`);
+            return super.confirmPath();
         }
     }
 
