@@ -36,12 +36,14 @@ export abstract class PathsCommand extends ClientCommand {
 
     protected checkIsMetadata(): boolean {
         let isMetadata: boolean = false;
+        const ignoredFileNames = ['package.xml', 'destructiveChanges.xml', 'destructiveChangesPost.xml', 'destructiveChangesPre.xml'];
         
         if(this.filePath) {
             let srcDirectoryPath = path.join(vscode.workspace.rootPath, 'src');
             let underWorkspaceSrcDirectory = this.filePath.startsWith(srcDirectoryPath);
+            let ignoredFileNamesContainsBaseName = ignoredFileNames.indexOf(this.baseName) == -1;
             
-            isMetadata = underWorkspaceSrcDirectory && this.baseName != 'package.xml';
+            isMetadata = underWorkspaceSrcDirectory && ignoredFileNamesContainsBaseName;
         }
 
         return isMetadata;

@@ -67,7 +67,11 @@ export class MavensMateExtension {
         let saveEvent = vscode.workspace.onDidSaveTextDocument((textDocument) => {
             let compileOnSaveConfigured = getConfiguration('mavensMate.compileOnSave');
             let isApexScript = textDocument.fileName.includes('apex-scripts');
-            let isMetadata = textDocument.fileName.includes('src');
+            let isMetadata = textDocument.fileName.includes('src')
+                && !textDocument.fileName.endsWith('package.xml')
+                && !textDocument.fileName.endsWith('destructiveChanges.xml')
+                && !textDocument.fileName.endsWith('destructiveChangesPost.xml')
+                && !textDocument.fileName.endsWith('destructiveChangesPre.xml');
 
             if (!compileOnSaveConfigured) {
                 console.info('MavensMate: compileOnSave is not configured.');
