@@ -38,13 +38,10 @@ export abstract class PathsCommand extends ClientCommand {
         let isMetadata: boolean = false;
         
         if(this.filePath) {
-            let filePathParts = this.filePath.split(path.sep);
-            let srcDirectoryIndex = filePathParts.length - 3;
-
             let srcDirectoryPath = path.join(vscode.workspace.rootPath, 'src');
             let underWorkspaceSrcDirectory = this.filePath.startsWith(srcDirectoryPath);
             
-            isMetadata = filePathParts[srcDirectoryIndex] == 'src' && underWorkspaceSrcDirectory;
+            isMetadata = underWorkspaceSrcDirectory && this.baseName != 'package.xml';
         }
 
         return isMetadata;
