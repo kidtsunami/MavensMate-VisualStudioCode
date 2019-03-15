@@ -57,16 +57,13 @@ export class MavensMateChannel implements Disposable {
 
             if(this.waitingOnCount == 0 && this.isWaiting == false){
                 this.isWaiting = true;
-                promiseResult = Promise.resolve().then(() => {
-                    let thisChannel = this;
-                    setTimeout(function () {
-                      if(thisChannel.waitingOnCount == 0){
-                          if(level == 'STATUS' && getConfiguration<boolean>('mavensMate.hideOutputOnSuccess')){
-                              thisChannel.hide();
-                          }
-                          thisChannel.isWaiting = false;
+                promiseResult = Promise.delay(this.waitingDelay).then(() => {
+                  if(this.waitingOnCount == 0){
+                      if(level == 'STATUS' && getConfiguration<boolean>('mavensMate.hideOutputOnSuccess')){
+                          this.hide();
                       }
-                    }, thisChannel.waitingDelay);
+                      this.isWaiting = false;
+                  }
                 });
             }
             return promiseResult;
@@ -74,7 +71,8 @@ export class MavensMateChannel implements Disposable {
     }
 
     show(){
-        this.channel.show();
+        let preserveFocus = true;
+        this.channel.show(preserveFocus);
         this.isShowing = true;
     }
 
@@ -90,11 +88,8 @@ export class MavensMateChannel implements Disposable {
         } else {
             this.waitingOnCount++;
             this.show();
-            let thisChannel = this;
-            return Promise.resolve().then(() => {
-                setTimeout(function() {
-                  thisChannel.waitingOnCount--;
-                }, thisChannel.waitingDelay);
+            return Promise.delay(this.waitingDelay).then(() => {
+                this.waitingOnCount--;
             });
         }
     }
