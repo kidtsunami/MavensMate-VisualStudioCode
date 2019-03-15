@@ -57,7 +57,7 @@ export class MavensMateChannel implements Disposable {
 
             if(this.waitingOnCount == 0 && this.isWaiting == false){
                 this.isWaiting = true;
-                promiseResult = Promise.delay(this.waitingDelay).then(() => {
+                Promise.delay(this.waitingDelay).then(() => {
                   if(this.waitingOnCount == 0){
                       if(level == 'STATUS' && getConfiguration<boolean>('mavensMate.hideOutputOnSuccess')){
                           this.hide();
