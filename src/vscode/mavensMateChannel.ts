@@ -10,7 +10,7 @@ export class MavensMateChannel implements Disposable {
     waitingDelay: number;
     isShowing: boolean;
     isWaiting: boolean;
-    
+
     private static _instance: MavensMateChannel = null;
     static getInstance(): MavensMateChannel{
         if(MavensMateChannel._instance == null){
@@ -18,7 +18,7 @@ export class MavensMateChannel implements Disposable {
         }
         return MavensMateChannel._instance;
     }
-    
+
     constructor(){
         if(MavensMateChannel._instance){
             throw new Error("Error: Instantiation failed. Singleton module! Use .getInstance() instead of new.");
@@ -30,7 +30,7 @@ export class MavensMateChannel implements Disposable {
         this.isShowing = false;
         this.isWaiting = false;
     }
-    
+
     appendStatus(message: string){
         return this.appendLine(message, 'STATUS');
     }
@@ -41,6 +41,7 @@ export class MavensMateChannel implements Disposable {
 
     appendLine(message: string, level?: string){
         return Promise.resolve().then(() => {
+            let promiseResult = null;
             let tabs = (level && level.length > 5 ? 1 : 2);
             let formattedMessage = `${ '\t'.repeat(tabs) }${message}`;
             if(level){
@@ -49,28 +50,29 @@ export class MavensMateChannel implements Disposable {
                 formattedMessage = '\t\t' + formattedMessage;
             }
             this.channel.appendLine(formattedMessage);
-            
+
             if(!this.isShowing) {
                 this.show();
             }
 
             if(this.waitingOnCount == 0 && this.isWaiting == false){
                 this.isWaiting = true;
-                Promise.delay(this.waitingDelay).then(() => {
-                    if(this.waitingOnCount == 0){
-                        if(level == 'STATUS' && getConfiguration<boolean>('mavensMate.hideOutputOnSuccess')){
-                            this.hide();
-                        }
-                        this.isWaiting = false;
-                    }
-                }); 
+                promiseResult = Promise.delay(this.waitingDelay).then(() => {
+                  if(this.waitingOnCount == 0){
+                      if(level == 'STATUS' && getConfiguration<boolean>('mavensMate.hideOutputOnSuccess')){
+                          this.hide();
+                      }
+                      this.isWaiting = false;
+                  }
+                });
             }
-            return null;
+            return promiseResult;
         });
     }
 
     show(){
-        this.channel.show();
+        let preserveFocus = true;
+        this.channel.show(preserveFocus);
         this.isShowing = true;
     }
 
