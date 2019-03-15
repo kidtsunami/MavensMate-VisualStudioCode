@@ -58,14 +58,15 @@ export class MavensMateChannel implements Disposable {
             if(this.waitingOnCount == 0 && this.isWaiting == false){
                 this.isWaiting = true;
                 promiseResult = Promise.resolve().then(() => {
+                    let thisChannel = this;
                     setTimeout(function () {
-                      if(this.waitingOnCount == 0){
+                      if(thisChannel.waitingOnCount == 0){
                           if(level == 'STATUS' && getConfiguration<boolean>('mavensMate.hideOutputOnSuccess')){
-                              this.hide();
+                              thisChannel.hide();
                           }
-                          this.isWaiting = false;
+                          thisChannel.isWaiting = false;
                       }
-                    }, this.waitingDelay);
+                    }, thisChannel.waitingDelay);
                 });
             }
             return promiseResult;
@@ -89,10 +90,11 @@ export class MavensMateChannel implements Disposable {
         } else {
             this.waitingOnCount++;
             this.show();
+            let thisChannel = this;
             return Promise.resolve().then(() => {
                 setTimeout(function() {
-                  this.waitingOnCount--;
-                }, this.waitingDelay);
+                  thisChannel.waitingOnCount--;
+                }, thisChannel.waitingDelay);
             });
         }
     }
